@@ -1,71 +1,117 @@
-# Dhan 20 Depth API
+# Dhan 20 Depth Market Data Viewer
 
-A real-time market depth visualization tool that displays 20 levels of bid and ask data from the Dhan trading platform. Built with Python Flask and modern web technologies.
+A real-time market depth visualization tool for Dhan Trading API that displays 20-level market depth data for NSE stocks.
 
 ## Features
 
-- Real-time 20-level market depth visualization
-- WebSocket integration for live data updates
-- Bid and ask price levels with quantities and order counts
-- Total bid and ask volumes
-- Stock details including circuit limits and trading info
-- Clean, responsive UI with Tailwind CSS
-- Color-coded bid/ask prices for better visibility
+- Real-time 20-level market depth data visualization
+- WebSocket-based live data streaming
+- Clean and responsive UI using TailwindCSS and DaisyUI
+- Animated bid/offer quantity updates
+- Secure credential management through environment variables
 
-## Setup
+## Prerequisites
 
-1. Install the required packages:
+- Python 3.8+
+- Dhan Trading Account
+- Dhan API Credentials (Token and Client ID)
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/marketcalls/dhan-20depth.git
+cd dhan-20depth
+```
+
+2. Install required Python packages:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Create a `.env` file with your Dhan API credentials:
-   - Copy `.env.sample` to `.env`
-   - Replace the placeholder values with your actual credentials:
+3. Create a `.env` file in the project root and add your Dhan credentials:
 ```env
-DHAN_TOKEN=your_actual_token_here    # Replace eyxxxxx with your token
-DHAN_CLIENT_ID=your_client_id_here   # Replace 100xxxxxxx with your client ID
+DHAN_TOKEN=your_dhan_token
+DHAN_CLIENT_ID=your_client_id
 ```
 
-3. Run the application:
+## Configuration
+
+The application uses the following environment variables:
+- `DHAN_TOKEN`: Your Dhan API token
+- `DHAN_CLIENT_ID`: Your Dhan client ID
+
+You can also modify the stock being tracked by changing the `SecurityId` in `market-depth.js`:
+```javascript
+{
+    "ExchangeSegment": "NSE_EQ",
+    "SecurityId": "2885",  // Change this to your desired stock's security ID
+    "BidAskBoth": true,
+    "Mode": "20DEPTH"
+}
+```
+
+## Usage
+
+1. Start the Flask server:
 ```bash
 python app.py
 ```
 
-4. Open your browser and navigate to `http://localhost:5000`
+2. Open your browser and navigate to:
+```
+http://localhost:5000
+```
 
 ## Technical Details
 
-- **Backend**: Python Flask server handling WebSocket connections
-- **Frontend**: 
-  - Vanilla JavaScript for WebSocket handling and UI updates
-  - Tailwind CSS for styling
-  - Real-time binary data processing
-- **Data Format**: 
-  - Feed Code 41: Bid Data (Buy)
-  - Feed Code 51: Ask Data (Sell)
-  - 20 levels of depth with price, quantity, and order count
+### Backend (`app.py`)
+- Flask-based server handling WebSocket connections and credential management
+- Asynchronous WebSocket client for Dhan's market depth feed
+- Binary message parsing for market depth data
 
-## Project Structure
+### Frontend
+- `market-depth.js`: Handles WebSocket connection, data processing, and UI updates
+- `index.html`: Responsive UI layout with real-time data display
+- Uses TailwindCSS and DaisyUI for styling
 
-```
-.
-├── app.py              # Flask application
-├── static/
-│   ├── css/
-│   │   └── styles.css  # Custom styles
-│   └── js/
-│       └── market-depth.js  # WebSocket and UI logic
-├── templates/
-│   └── index.html      # Main HTML template
-├── .env.sample         # Environment variables template
-└── requirements.txt    # Python dependencies
-```
+### WebSocket Message Format
+Market depth data is received in binary format:
+- Header (12 bytes):
+  - Message Length (2 bytes)
+  - Feed Code (1 byte): 41 for Bid, 51 for Ask
+  - Exchange Segment (1 byte)
+  - Security ID (4 bytes)
+  - Message Sequence (4 bytes)
+- Data (20 levels × 16 bytes each):
+  - Price (8 bytes, double)
+  - Quantity (4 bytes, uint32)
+  - Orders (4 bytes, uint32)
+
+## Error Handling
+- Automatic WebSocket reconnection on disconnection
+- Ping/Pong mechanism to detect connection health
+- Comprehensive error logging for debugging
+- Graceful handling of malformed messages
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- [Dhan API](https://api.dhan.co) for providing the market data feed
+- [TailwindCSS](https://tailwindcss.com) and [DaisyUI](https://daisyui.com) for the UI components
+- [Flask](https://flask.palletsprojects.com) for the web framework
+
+## Support
+
+For support, please raise an issue in the GitHub repository or contact the maintainers.

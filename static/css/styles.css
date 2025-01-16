@@ -1,0 +1,121 @@
+/* Market depth table styles */
+.depth-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    align-items: center;
+}
+
+.depth-row > div {
+    text-align: right;
+}
+
+.depth-row:hover {
+    background-color: #f3f4f6;
+}
+
+/* Stock details styles */
+.stock-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stock-section {
+    display: grid;
+    gap: 1rem;
+}
+
+.stock-section h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.data-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.label {
+    color: #6b7280;
+}
+
+.value {
+    font-weight: 500;
+}
+
+.last-traded {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Market depth container */
+.market-depth {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.stock-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.change-info {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.column-headers {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.totals {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    font-size: 0.875rem;
+}
+
+.total-label {
+    color: #6b7280;
+}
+
+.total-value {
+    font-weight: 500;
+}
+
+.text-blue-600 {
+    color: #2563eb;
+}
+
+.text-red-600 {
+    color: #dc2626;
+}

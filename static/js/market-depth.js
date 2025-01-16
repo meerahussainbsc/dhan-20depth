@@ -224,48 +224,63 @@ class MarketDepthWebSocket {
         const totalBidQty = sortedBids.reduce((sum, bid) => sum + bid.quantity, 0);
         const totalOfferQty = sortedOffers.reduce((sum, offer) => sum + offer.quantity, 0);
         
-        // Update totals
-        document.getElementById('total-bid').textContent = totalBidQty.toLocaleString();
-        document.getElementById('total-offer').textContent = totalOfferQty.toLocaleString();
+        // Update totals with animation
+        this.animateValue('total-bid', totalBidQty);
+        this.animateValue('total-offer', totalOfferQty);
         
         // Display depth data
         const maxRows = Math.max(sortedBids.length, sortedOffers.length);
         for (let i = 0; i < maxRows; i++) {
-            const row = document.createElement('div');
-            row.className = 'depth-row';
+            const row = document.createElement('tr');
+            row.className = 'hover';
             
             const bid = sortedBids[i] || {};
             const offer = sortedOffers[i] || {};
             
-            // Create cells in the order matching the column headers:
-            // BID | ORDERS | QTY. | OFFER | ORDERS | QTY.
+            // Format numbers with commas and proper decimals
+            const formatNumber = (num, decimals = 2) => {
+                return new Intl.NumberFormat('en-IN', {
+                    minimumFractionDigits: decimals,
+                    maximumFractionDigits: decimals
+                }).format(num);
+            };
+            
             row.innerHTML = `
-                <div class="text-blue-600">${bid.price ? bid.price.toFixed(2) : ''}</div>
-                <div>${bid.orders || ''}</div>
-                <div>${bid.quantity ? bid.quantity.toLocaleString() : ''}</div>
-                <div class="text-red-600">${offer.price ? offer.price.toFixed(2) : ''}</div>
-                <div>${offer.orders || ''}</div>
-                <div>${offer.quantity ? offer.quantity.toLocaleString() : ''}</div>
+                <td class="bid-price font-semibold">${bid.price ? formatNumber(bid.price) : '-'}</td>
+                <td class="text-base-content/70">${bid.orders ? formatNumber(bid.orders, 0) : '-'}</td>
+                <td class="text-base-content/70">${bid.quantity ? formatNumber(bid.quantity, 0) : '-'}</td>
+                <td class="ask-price font-semibold">${offer.price ? formatNumber(offer.price) : '-'}</td>
+                <td class="text-base-content/70">${offer.orders ? formatNumber(offer.orders, 0) : '-'}</td>
+                <td class="text-base-content/70">${offer.quantity ? formatNumber(offer.quantity, 0) : '-'}</td>
             `;
             
             depthDataElement.appendChild(row);
         }
+    }
 
-        // Log the current state
-        console.log('Depth Data (Bid):', {
-            count: sortedBids.length,
-            range: sortedBids.length > 0 ? {
-                lowest: sortedBids[sortedBids.length - 1].price,
-                highest: sortedBids[0].price
-            } : null
-        });
-        console.log('Depth Data (Ask):', {
-            count: sortedOffers.length,
-            range: sortedOffers.length > 0 ? {
-                lowest: sortedOffers[0].price,
-                highest: sortedOffers[sortedOffers.length - 1].price
-            } : null
-        });
+    animateValue(elementId, end) {
+        const element = document.getElementById(elementId);
+        const start = parseInt(element.textContent.replace(/,/g, '')) || 0;
+        const duration = 500; // Animation duration in milliseconds
+        const startTime = performance.now();
+        
+        const animate = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function for smooth animation
+            const easeOutQuad = (t) => t * (2 - t);
+            const easedProgress = easeOutQuad(progress);
+            
+            const current = Math.floor(start + (end - start) * easedProgress);
+            element.textContent = new Intl.NumberFormat('en-IN').format(current);
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+        
+        requestAnimationFrame(animate);
     }
 }
 

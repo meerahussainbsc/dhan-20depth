@@ -1,93 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Market Depth Visualization</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            daisyui: {
+                themes: ["light", "dark"],
+            },
+        }
+    </script>
+    <style>
+        .bid-price { color: #2563eb; }
+        .ask-price { color: #dc2626; }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <div class="container mx-auto px-4 py-8">
-        <!-- Stock Details Section -->
-        <div class="stock-details">
-            <div class="stock-section">
-                <h2>Stock Today</h2>
-                <div class="data-grid">
-                    <div class="label">Open at</div>
-                    <div class="value" id="open">1,258.90</div>
-                    <div class="label">High</div>
-                    <div class="value" id="high">1,261.90</div>
-                    <div class="label">Low</div>
-                    <div class="value" id="low">1,251.30</div>
-                </div>
-            </div>
-            <div class="stock-section">
-                <h2>Circuit Details</h2>
-                <div class="data-grid">
-                    <div class="label">Lower Circuit</div>
-                    <div class="value" id="lower-circuit">1,127.00</div>
-                    <div class="label">Upper Circuit</div>
-                    <div class="value" id="upper-circuit">1,377.40</div>
-                </div>
-            </div>
-            <div class="stock-section">
-                <h2>Trading Info</h2>
-                <div class="data-grid">
-                    <div class="label">Prev Close</div>
-                    <div class="value" id="prev-close">1,252.20</div>
-                    <div class="label">Volumes</div>
-                    <div class="value" id="volumes">32,42,330</div>
-                    <div class="label">Avg Price</div>
-                    <div class="value" id="avg-price">1,256.15</div>
-                </div>
-            </div>
-            <div class="last-traded">
-                <div class="data-grid">
-                    <div>
-                        <span class="label">Last Traded Quantity:</span>
-                        <span class="value ml-2" id="last-qty">204</span>
+<body class="min-h-screen bg-base-200">
+    <div class="container mx-auto p-4">
+        <!-- Market Depth Card -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body p-0">
+                <!-- Header -->
+                <div class="flex justify-between items-center p-4 border-b border-base-300">
+                    <div class="flex items-center gap-4">
+                        <h1 class="text-2xl font-bold">RELIANCE - NSE</h1>
+                        <div class="stats shadow">
+                            <div class="stat px-4 py-2">
+                                <div class="stat-title text-xs">Change</div>
+                                <div class="stat-value text-lg">
+                                    <span id="change-percent">0.00%</span>
+                                    <span id="change-value" class="ml-2">0.00</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <span class="label">Time:</span>
-                        <span class="value ml-2" id="last-time">10:43:30</span>
+                    <div class="flex gap-2">
+                        <div class="stats shadow">
+                            <div class="stat px-4 py-2">
+                                <div class="stat-title text-xs">Total Bid</div>
+                                <div class="stat-value text-lg text-primary" id="total-bid">0</div>
+                            </div>
+                        </div>
+                        <div class="stats shadow">
+                            <div class="stat px-4 py-2">
+                                <div class="stat-title text-xs">Total Offer</div>
+                                <div class="stat-value text-lg text-secondary" id="total-offer">0</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Market Depth Section -->
-        <div class="market-depth">
-            <div class="header">
-                <h1 class="stock-name">RELIANCE - NSE</h1>
-                <div class="change-info">
-                    <span id="change-percent">0.00%</span>
-                    <span id="change-value">0.00</span>
-                </div>
-            </div>
-
-            <div class="column-headers">
-                <div>BID</div>
-                <div>ORDERS</div>
-                <div>QTY.</div>
-                <div>OFFER</div>
-                <div>ORDERS</div>
-                <div>QTY.</div>
-            </div>
-
-            <div id="depth-data">
-                <!-- Market depth data will be populated here -->
-            </div>
-
-            <div class="totals">
-                <div>
-                    <span class="total-label">Total Bid: </span>
-                    <span class="total-value" id="total-bid">0</span>
-                </div>
-                <div>
-                    <span class="total-label">Total Offer: </span>
-                    <span class="total-value" id="total-offer">0</span>
+                <!-- Market Depth Table -->
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra table-sm table-pin-rows">
+                        <!-- head -->
+                        <thead>
+                            <tr class="text-sm uppercase tracking-wider">
+                                <th>BID</th>
+                                <th>ORDERS</th>
+                                <th>QTY.</th>
+                                <th>OFFER</th>
+                                <th>ORDERS</th>
+                                <th>QTY.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="depth-data">
+                            <!-- Market depth data will be populated here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
